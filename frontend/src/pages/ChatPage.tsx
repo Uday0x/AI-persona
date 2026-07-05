@@ -6,6 +6,36 @@ interface ChatPageProps {
   onBack: () => void;
 }
 
+async function readApiResponse(response: Response) {
+  const body = await response.text();
+
+  if (!body.trim()) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(body);
+  } catch {
+    if (!response.ok) {
+      throw new Error(body || `Request failed with status ${response.status}`);
+    }
+
+    throw new Error('Server returned an invalid response. Please check the backend terminal.');
+  }
+}
+
+function getErrorMessage(data: any, response: Response) {
+  if (typeof data?.error === 'string' && data.error.trim()) {
+    return data.error;
+  }
+
+  if (response.status === 500) {
+    return 'Backend server error. Please check OPENAI_API_KEY and the backend terminal logs.';
+  }
+
+  return `Request failed with status ${response.status}`;
+}
+
 function ChatPanel({ personaId }: { personaId: PersonaId }) {
   const persona = PERSONAS[personaId];
   const [messages, setMessages] = useState<any[]>([]);
@@ -30,7 +60,7 @@ function ChatPanel({ personaId }: { personaId: PersonaId }) {
         const response = await fetch(`${persona.endpoint}/session?sessionId=${encodeURIComponent(sessionId)}`);
         if (!response.ok) throw new Error('session unavailable');
 
-        const data = await response.json();
+        const data = await readApiResponse(response);
         const restored = (data.messages ?? []).map(normalizeMessage);
 
         if (activeEffect) {
@@ -62,8 +92,8 @@ function ChatPanel({ personaId }: { personaId: PersonaId }) {
         body: JSON.stringify({ prompt, sessionId: sessionId || undefined }),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error ?? 'Something went wrong');
+      const data = await readApiResponse(response);
+      if (!response.ok) throw new Error(getErrorMessage(data, response));
 
       if (data.sessionId) {
         localStorage.setItem(persona.key, data.sessionId);
