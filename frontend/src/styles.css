@@ -250,6 +250,14 @@ button, textarea { font: inherit; }
   align-items: end;
   margin: 1.2rem 0 1rem;
 }
+.persona-card:hover{
+transform:translateY(-6px);
+box-shadow:
+0 20px 60px rgba(255,140,0,.22);
+}
+.hero h1{
+animation:fadeUp .7s ease;
+}
 .chat-page-hero h1 {
   margin: 0.35rem 0 0;
   font-family: var(--font-display);
