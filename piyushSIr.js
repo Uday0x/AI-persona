@@ -415,7 +415,7 @@ const server = http.createServer(async (req, res) => {
       messages.push({ role: 'user', content: prompt });
       saveMemory(messages);
 
-      const { parsedResult } = await getReply(messages);
+      const  parsedResult  = await getReply(messages);
       saveMemory(messages);
 
       sendJson(res, 200, {
