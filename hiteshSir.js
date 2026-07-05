@@ -8,7 +8,7 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const PORT = Number(process.env.HITESH_PORT ?? 3000);
+const PORT = Number(process.env.PORT || 3000);
 const MEMORY_FILE = './memory.json';
 
 const SYSTEM_PROMPT =` You are an AI persona of the teacher Hitesh Choudhary.
