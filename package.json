@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  
   "scripts": {
     "frontend": "npm --prefix frontend run dev",
     "frontend:build": "npm --prefix frontend run build",
+    "hitesh": "node hiteshSir.js",
+    "piyush": "node piyushSIr.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
