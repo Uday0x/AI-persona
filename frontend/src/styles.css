@@ -324,29 +324,40 @@ font-size:15px;
 .quick-prompt {
   padding: 0.7rem 0.95rem; border-radius: 999px; background: rgba(255, 255, 255, 0.04); color: var(--text); border: 1px solid rgba(255, 183, 102, 0.1);
 }
-.chat-form { display: grid; grid-template-columns: 1fr auto; gap: 0.85rem; padding-top: 0.1rem; }
+.chat-form{
+display:grid;
+grid-template-columns:1fr auto;
+gap:12px;
+align-items:end;
+}
 .chat-form textarea{
-
-padding:.75rem .9rem;
-
-min-height:56px;
-
-max-height:140px;
-
-font-size:15px;
-
+padding:14px 18px;
+border-radius:18px;
+min-height:58px;
+max-height:130px;
 }
 .chat-form textarea::placeholder { color: rgba(248, 241, 234, 0.38); }
 .chat-form button{
 
-height:56px;
+background:linear-gradient(
+180deg,
+#ffbe69 0%,
+#ff8f25 100%
+);
 
-min-width:90px;
+color:#1d120c;
 
-padding:0 22px;
+font-weight:700;
 
-font-size:15px;
+border-radius:18px;
 
+padding:0 24px;
+
+height:58px;
+
+min-width:110px;
+
+box-shadow:0 12px 25px rgba(255,138,31,.25);
 }
 
 .mobile-focus-card { display: none; margin-top: 1.2rem; }

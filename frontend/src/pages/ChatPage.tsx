@@ -151,6 +151,7 @@ function ChatPanel({ personaId }: { personaId: PersonaId }) {
       ]);
       console.log("DATA =", data);
       console.log("REPLY =", data.reply);
+      
     } catch (error) {
       setMessages((current) => [
         ...current.filter((message) => message.meta !== "typing"),
@@ -204,10 +205,10 @@ function ChatPanel({ personaId }: { personaId: PersonaId }) {
         ) : (
           messages.map((message, index) => (
             <div
-              key={`${message.role}-${index}-${message.text.slice(0, 12)}`}
+              key={`${message.role}-${index}-${(message.text ?? "").slice(0,12)}`}
               className={`message ${message.role === "user" ? "bubble-user" : "bubble-assistant"} ${message.meta === "reset" ? "bubble-system" : ""}`}
             >
-              <div className="message-main">{message.text}</div>
+              <div className="message-main">{message.text ?? ""}</div>
             </div>
           ))
         )}
