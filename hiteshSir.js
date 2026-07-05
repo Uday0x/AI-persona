@@ -150,10 +150,20 @@ function getBody(req) {
     req.on('error', reject);
   });
 }
+function setCorsHeaders(res) {
+  res.setHeader("Access-Control-Allow-Origin", "https://ai-persona-blue.vercel.app");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+function sendJson(res, status, payload) {
 
-function sendJson(res, statusCode, payload) {
-  res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8' });
-  res.end(JSON.stringify(payload, null, 2));
+    setCorsHeaders(res);
+
+    res.writeHead(status, {
+        "Content-Type": "application/json"
+    });
+
+    res.end(JSON.stringify(payload));
 }
 
 function loadMemory() {
@@ -211,6 +221,12 @@ console.log("OpenAI Success");
 
 
 const server = http.createServer(async (req, res) => {
+  setCorsHeaders(res);
+  if (req.method === "OPTIONS") {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
   try {
     if (req.method === 'GET' && req.url === '/health') {
       sendJson(res, 200, { ok: true, persona: 'hitesh' });

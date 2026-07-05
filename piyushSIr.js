@@ -287,10 +287,20 @@ function getBody(req) {
     req.on('error', reject);
   });
 }
+function setCorsHeaders(res) {
+  res.setHeader("Access-Control-Allow-Origin", "https://ai-persona-blue.vercel.app");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+function sendJson(res, status, payload) {
 
-function sendJson(res, statusCode, payload) {
-  res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8' });
-  res.end(JSON.stringify(payload, null, 2));
+    setCorsHeaders(res);
+
+    res.writeHead(status, {
+        "Content-Type": "application/json"
+    });
+
+    res.end(JSON.stringify(payload));
 }
 
 function loadMemory() {
@@ -305,35 +315,58 @@ function saveMemory(messages) {
   fs.writeFileSync(MEMORY_FILE, JSON.stringify(messages, null, 2));
 }
 
-async function getReply(messages) {
-  const result = await client.chat.completions.create({
-    model: 'gpt-4o',
-    messages,
-    response_format: { type: 'json_object' },
-  });
 
-  const rawResult =
-    result.choices[0]?.message?.content ??
-    '{"step":"OUTPUT","text":""}';
+  async function getReply(messages) {
 
-  const parsedResult = JSON.parse(rawResult);
+    try{
+console.log("Calling OpenAI...");
+        const result = await client.chat.completions.create({
+            model:"gpt-4o",
+            messages,
+            response_format:{
+                type:"json_object"
+            }
+        });
+console.log("OpenAI Success");
+        console.log(result);
 
-  // Sirf actual reply memory me save karo
-  messages.push({
-    role: "assistant",
-    content: parsedResult.text,
-  });
+        const raw =
+            result.choices[0].message.content;
 
-  return {
-    rawResult,
-    parsedResult,
-  };
+        console.log("RAW RESPONSE");
+        console.log(raw);
+
+        const parsed=JSON.parse(raw);
+
+        messages.push({
+            role:"assistant",
+            content:parsed.text
+        });
+
+        return parsed;
+
+    }catch(err){
+
+        console.error("OPENAI ERROR");
+        console.error(err);
+
+        throw err;
+    }
+
+
 }
 
+
 const server = http.createServer(async (req, res) => {
+  setCorsHeaders(res);
+  if (req.method === "OPTIONS") {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
   try {
     if (req.method === 'GET' && req.url === '/health') {
-      sendJson(res, 200, { ok: true, persona: 'piyush' });
+      sendJson(res, 200, { ok: true, persona: 'hitesh' });
       return;
     }
 
@@ -401,7 +434,7 @@ const server = http.createServer(async (req, res) => {
 
 server.on('error', (error) => {
   if (error.code === 'EADDRINUSE') {
-    console.error(`Piyush backend port ${PORT} is already in use. Stop the existing server or change PIYUSH_PORT.`);
+    console.error(`Hitesh backend port ${PORT} is already in use. Stop the existing server or change HITESH_PORT.`);
     return;
   }
 
@@ -409,5 +442,5 @@ server.on('error', (error) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Piyush backend running on http://localhost:${PORT}`);
+  console.log(`Hitesh backend running on http://localhost:${PORT}`);
 });
