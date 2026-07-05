@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Persona AI</title>
+    <meta
+      name="description"
+      content="A modern orange-themed persona AI landing page with separate Hitesh and Piyush chat interfaces."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script defer src="/app.js"></script>
+  </head>
+  <body>
+    <div class="bg-glow bg-glow-left"></div>
+    <div class="bg-glow bg-glow-right"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">☕</div>
+        <div>
+          <p>Persona AI</p>
+          <span>Hitesh Sir + Piyush Sir</span>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <a href="#chat-grid">Chats</a>
+        <a href="#persona-cards">Persona</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">Orange themed, modern, stateful chat</div>
+          <h1>Two persona chats, one smooth interface.</h1>
+          <p>
+            Build conversations with Hitesh Sir and Piyush Sir in separate panels.
+            Each chat keeps its own in-memory session, so the conversation feels
+            continuous without needing a database.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#chat-grid">Start Chatting</a>
+            <a class="button secondary" href="#persona-cards">Explore Personas</a>
+          </div>
+          <div class="stats-row">
+            <div class="stat-card">
+              <strong>2</strong>
+              <span>persona-specific interfaces</span>
+            </div>
+            <div class="stat-card">
+              <strong>0</strong>
+              <span>database required</span>
+            </div>
+            <div class="stat-card">
+              <strong>1</strong>
+              <span>shared orange design system</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-panel hero-panel-main">
+            <div class="panel-badge">Community-driven learning</div>
+            <h2>Consistency and conversation, styled like a product.</h2>
+            <p>
+              Warm gradients, glass panels, sticky headers, and a chat-first layout
+              make the interface feel polished without getting noisy.
+            </p>
+            <div class="mini-chip-row">
+              <span>Hitesh Sir</span>
+              <span>Piyush Sir</span>
+              <span>Stateful session</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="persona-cards" class="persona-grid">
+        <article class="persona-card persona-hitesh">
+          <div class="persona-top">
+            <span class="persona-tag">Hitesh Sir</span>
+            <span class="persona-chip">Warm Hinglish</span>
+          </div>
+          <h3>Teaching-first, project-first, chai-first.</h3>
+          <p>
+            Best for fundamentals, roadmaps, project guidance, and friendly
+            explanations in a Hitesh-style voice.
+          </p>
+          <div class="persona-meta">
+            <span>JS</span><span>React</span><span>Node</span><span>GenAI</span>
+          </div>
+        </article>
+
+        <article class="persona-card persona-piyush">
+          <div class="persona-top">
+            <span class="persona-tag">Piyush Sir</span>
+            <span class="persona-chip">Architecture-first</span>
+          </div>
+          <h3>Modern product thinking with real-world tradeoffs.</h3>
+          <p>
+            Best for systems, scaling, GenAI workflows, and a confident technical
+            style with strong product energy.
+          </p>
+          <div class="persona-meta">
+            <span>Next.js</span><span>Docker</span><span>RAG</span><span>Agents</span>
+          </div>
+        </article>
+      </section>
+
+      <section id="chat-grid" class="chat-grid">
+        <section class="chat-shell" data-persona="hitesh">
+          <div class="chat-header">
+            <div>
+              <p class="chat-kicker">Chat Interface</p>
+              <h2>Hitesh Sir</h2>
+            </div>
+            <div class="chat-actions">
+              <button type="button" class="ghost-btn" data-action="reset">Reset</button>
+            </div>
+          </div>
+          <div class="chat-body" data-messages></div>
+          <form class="chat-form" data-form>
+            <textarea rows="2" placeholder="Ask Hitesh Sir something..." data-input></textarea>
+            <button type="submit">Send</button>
+          </form>
+        </section>
+
+        <section class="chat-shell chat-shell-alt" data-persona="piyush">
+          <div class="chat-header">
+            <div>
+              <p class="chat-kicker">Chat Interface</p>
+              <h2>Piyush Sir</h2>
+            </div>
+            <div class="chat-actions">
+              <button type="button" class="ghost-btn" data-action="reset">Reset</button>
+            </div>
+          </div>
+          <div class="chat-body" data-messages></div>
+          <form class="chat-form" data-form>
+            <textarea rows="2" placeholder="Ask Piyush Sir something..." data-input></textarea>
+            <button type="submit">Send</button>
+          </form>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
