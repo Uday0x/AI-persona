@@ -101,16 +101,20 @@ function ChatPanel({ personaId }: { personaId: PersonaId }) {
       }
 
       const finalAnswer = normalizeAssistantPayload(data.reply);
+      console.log(finalAnswer);
       setMessages((current) => [
         ...current.filter((message) => message.meta !== 'typing'),
         { role: 'assistant', text: finalAnswer.text, meta: 'response' },
       ]);
+      console.log("DATA =", data);
+      console.log("REPLY =", data.reply);  
     } catch (error) {
       setMessages((current) => [
         ...current.filter((message) => message.meta !== 'typing'),
         { role: 'assistant', text: error instanceof Error ? error.message : 'Network error', meta: 'error' },
       ]);
     }
+   
   }
 
   async function resetSession() {
