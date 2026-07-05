@@ -1,15 +1,10 @@
 import { randomUUID } from 'crypto';
 import { OpenAI } from 'openai';
-import 'dotenv/config';
-import fs from 'fs';
-import http from 'http';
+
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
-const PORT = Number(process.env.HITESH_PORT ?? 3000);
-const MEMORY_FILE = './memory.json';
 
 const SYSTEM_PROMPT =` You are an AI persona of the teacher Hitesh Choudhary.
 
@@ -121,6 +116,7 @@ Rules:
 
 const sessions = new Map();
 
+
 function ensureSession(sessionId = randomUUID()) {
   if (!sessions.has(sessionId)) {
     sessions.set(sessionId, [{ role: 'system', content: SYSTEM_PROMPT }]);
@@ -128,6 +124,7 @@ function ensureSession(sessionId = randomUUID()) {
 
   return { sessionId, messages: sessions.get(sessionId) };
 }
+
 
 function getBody(req) {
   return new Promise((resolve, reject) => {
@@ -210,84 +207,47 @@ console.log("OpenAI Success");
 }
 
 
-const server = http.createServer(async (req, res) => {
-  try {
-    if (req.method === 'GET' && req.url === '/health') {
-      sendJson(res, 200, { ok: true, persona: 'hitesh' });
-      return;
+
+export default async function handler(req, res) {
+
+    if(req.method !== "POST"){
+        return res.status(405).json({
+            error:"Method not allowed"
+        });
     }
 
-    if (req.method === 'GET' && req.url?.startsWith('/session')) {
-      const url = new URL(req.url, 'http://localhost');
-      const sessionId = url.searchParams.get('sessionId');
-      const session = sessionId ? sessions.get(sessionId) : null;
+    // yaha tumhara pura /chat wala logic
 
-      if (!session) {
-        sendJson(res, 404, { error: 'Session not found.' });
-        return;
-      }
+    const body = req.body;
 
-      sendJson(res, 200, {
-        sessionId,
-        messages: session.filter((message) => message.role !== 'system'),
-      });
-      return;
-    }
+const prompt =
+  typeof body.prompt === "string"
+    ? body.prompt.trim()
+    : "";
 
-    if (req.method === 'POST' && req.url === '/reset') {
-      const body = await getBody(req).catch(() => ({}));
-      const sessionId = body.sessionId;
+if (!prompt) {
+  return res.status(400).json({
+    error: "prompt is required",
+  });
+}
 
-      if (sessionId) {
-        sessions.delete(sessionId);
-      }
+const { sessionId, messages } = ensureSession(
+  body.sessionId || randomUUID()
+);
 
-      sendJson(res, 200, { ok: true, sessionId: sessionId ?? null });
-      return;
-    }
-
-    if (req.method === 'POST' && req.url === '/chat') {
-      const body = await getBody(req);
-      const prompt = typeof body.prompt === 'string' ? body.prompt.trim() : '';
-
-      if (!prompt) {
-        sendJson(res, 400, { error: 'prompt is required.' });
-        return;
-      }
-
-      const { sessionId, messages } = ensureSession(
-        typeof body.sessionId === 'string' && body.sessionId.trim() ? body.sessionId.trim() : randomUUID(),
-      );
-
-      messages.push({ role: 'user', content: prompt });
-      saveMemory(messages);
-
-      const { parsedResult } = await getReply(messages);
-      saveMemory(messages);
-
-      sendJson(res, 200, {
-        sessionId,
-        reply: parsedResult,
-      });
-      return;
-    }
-
-    sendJson(res, 404, { error: 'Not found. Use GET /health, POST /chat, GET /session, or POST /reset.' });
-  } catch (error) {
-    console.error(error);
-    sendJson(res, 500, { error: error instanceof Error ? error.message : 'Unknown error' });
-  }
+messages.push({
+  role: "user",
+  content: prompt,
 });
 
-server.on('error', (error) => {
-  if (error.code === 'EADDRINUSE') {
-    console.error(`Hitesh backend port ${PORT} is already in use. Stop the existing server or change HITESH_PORT.`);
-    return;
-  }
+const { parsedResult } = await getReply(messages);
 
-  console.error(error);
+return res.status(200).json({
+  sessionId,
+  reply: parsedResult,
 });
 
-server.listen(PORT, () => {
-  console.log(`Hitesh backend running on http://localhost:${PORT}`);
-});
+
+}
+
+
